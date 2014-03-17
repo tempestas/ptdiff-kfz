@@ -1,6 +1,6 @@
 @font-face {
 font-family:FE-Font;
-src:url(FONT/FE-Font.ttf);
+src:url(/FONT/FE-Font.ttf);
 }
 body{
         padding: 0;
