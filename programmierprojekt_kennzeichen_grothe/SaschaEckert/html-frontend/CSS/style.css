@@ -2,6 +2,8 @@
 font-family:FE-Font;
 src:url(/FONT/FE-Font.ttf);
 }
+@font-face { font-family: 'FE-Font';
+             src: url('/FONT/FE-Font.ttf') format('truetype'); }
 body{
         padding: 0;
         margin: 0;
@@ -11,6 +13,10 @@ body{
         overflow-y: scroll;
         overflow-x: hidden;
         background-color:DDDDDD;
+}
+
+.googlemaps iframe {
+         width: 97%;
 }
 body>*{
          overflow:hidden!important;
