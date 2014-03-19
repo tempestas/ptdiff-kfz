@@ -1,9 +1,6 @@
-@font-face {
-font-family:FE-Font;
-src:url(/FONT/FE-Font.ttf);
-}
+
 @font-face { font-family: 'FE-Font';
-             src: url('/FONT/FE-Font.ttf') format('truetype'); }
+             src: url('/FONT/FE-Font.woff'); }
 body{
         padding: 0;
         margin: 0;
