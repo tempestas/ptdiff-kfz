@@ -27,6 +27,9 @@ switch ($status) {
         $sql="SELECT `kreis_name` FROM `landkreis` WHERE kreis_name like '$par%';";
 	$returnvalue=$connector->getEntriesAsJSON($sql);
         break;
+    case "exportCSV":
+	$connector->exportToCSV();
+        break;
     default:
         $returnvalue=json_encode(false);
         break;
@@ -43,7 +46,7 @@ class MySqlConnector{
 	
 	protected $link;
 	private $server, $username, $password, $db;
-	private $tablename = "serverUsage";
+	private $tablename = "landkreis";
 	
 	function __construct(){
 		$this->server = "localhost";
@@ -122,30 +125,13 @@ class MySqlConnector{
 
 	}
 
-	public function getEntries(){
-		//$sql = "SELECT LONGITUDE, LATITUDE FROM $this->tablename WHERE LONGITUDE is not null and LATITUDE is not null";
-
-		$sql = "
-			SELECT 
-				USERID,MINUTES,REGTIME,IP,OS,BROWSER,LATITUDE,LONGITUDE,X(geometry) AS X,Y(geometry) AS Y 
-			FROM 
-			$this->tablename
-			WHERE 
-				geometry is not null
-			";
-				
-			return $this->execute($sql);
-				
-	}
-
-	
+		
 
 	// return: array(ID, kreis_kurz, kreis_name, kreis_stadt, bundesland)	
 	public function getEntriesAsJSON($sql){
 		$entries = $this->execute($sql);
 		$result = Array();
 		foreach ($entries as $line){
-			//array_push($result, (array("ID" => $line['ID'], "kreis_kurz" => $line['kreis_kurz'], "kreis_name" => $line['kreis_name'], "kreis_stadt" => $line['kreis_stadt'], "bundesland" => $line['bundesland'])));
 			array_push($result, $line);
 		}
 
@@ -173,6 +159,41 @@ class MySqlConnector{
 		}
 		//else;
 			//return false;
+	}
+
+	public function exportToCSV(){
+		$sql = "SELECT * FROM $this->tablename;";
+		//print $sql;
+		$dump = $this->execute($sql);
+		$delimeter=";";
+		$filename="export.csv";
+
+
+header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+header('Content-Description: File Transfer');
+header("Content-type: text/csv; charset=utf-8");
+header("Content-Disposition: attachment; filename={$fileName}");
+header("Expires: 0");
+header("Pragma: public");
+ 
+$fh = @fopen( 'php://output', 'w' );
+ 
+$headerDisplayed = false;
+ 
+foreach ( $dump as $data ) {
+    // Add a header row if it hasn't been added yet
+    if ( !$headerDisplayed ) {
+        // Use the keys from $data as the titles
+        fputcsv($fh, array_keys($data), $delimeter);
+        $headerDisplayed = true;
+    }
+ 
+    // Put the data into the stream
+    fputcsv($fh, $data, $delimeter);
+}
+// Close the file
+fclose($fh);
+
 	}
 
 }
