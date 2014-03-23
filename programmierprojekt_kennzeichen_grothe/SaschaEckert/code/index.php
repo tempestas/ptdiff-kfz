@@ -1,0 +1,73 @@
+<?php
+
+include "dataserver.php";
+include "htmloutput.php";
+
+$dataserver = new DataServer();
+$htmloutput = new HTMLOutput();
+
+$list="";
+$wiki="";
+$google="";
+
+if(isset($_GET["status"]) && isset($_GET["par"]))
+#if($_GET["status"] != null & $_GET["par"] != null)
+{
+    # kein treffer
+    if($dataserver->getData($_GET["par"], $_GET["status"]) == false
+       & $dataserver->getData($_GET["par"], $_GET["status"]."short") == false)
+    {
+        # do nothing
+    }
+    else
+    {
+        # wenn nicht genau ein treffer, dann liste
+        if(sizeof($dataserver->getData($_GET["par"], $_GET["status"]."short")) > 1 )
+        {
+            $list = $htmloutput->suggestions();
+        }
+        
+        # wenn treffer, dann gmaps und wiki
+        if($dataserver->getData($_GET["par"], $_GET["status"]) != false)
+        {
+            $data = $dataserver->getData($_GET["par"], $_GET["status"]);
+            $google = $htmloutput->gmapsEmbedding(urlencode($data["kreis_stadt"]));
+            #$wiki = $htmloutput->wikiEmbedding($data["kreis_stadt"]);
+        }
+    }
+}
+?>
+
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="html-frontend/CSS/style.css" />
+
+    </head>
+    <body>
+        <div id="body">
+            <div id="center">
+                <form action="index.php" method="get">
+                    <div class="kfzimage">
+                        <input id="kfz" name="par" type="text" placeholder="---" maxlength="3"/>
+                        <input id="query type" name="status" type="hidden" value="KEN"/>
+                    </div>
+                    <div class="others">
+                        <input id="rightbutton"  type="submit" value="Suchen"/>
+                    </div>
+                </form>
+                <br>
+                <br>
+                <form action="index.php" method="get">
+                    <div class="others">
+                        <input id="kreis" name="par" type="text" placeholder="Kreisstadt"/>
+                        <input id="rightbutton"  type="submit" value="Suchen"/>
+                        <input id="query type" name="status" type="hidden" value="KRE"/>
+                    </div>
+                </form>
+                <?php if($list!="")echo '<div class="list"> <hr>'.$list."</div>"; ?>
+                <?php if($wiki!="")echo '<div class="wikipedia"> <hr>'.$wiki."</div>"; ?>
+                <?php if($google!="")echo '<div class="googlemaps"> <hr>'.$google."</div>"; ?>
+            </div>
+        </div>
+    </body>
+</html>
