@@ -8,27 +8,63 @@ if(isset($_GET["par"]) && isset($_GET["status"])){
 $par=$_GET["par"];
 $status=$_GET["status"];
 $returnvalue=false;
+$sql;
 
+header("Access-Control-Allow-Origin: *"); //Benoetigt fuer den Zugriff ueber Ajax
 
 switch ($status) {
     case "KEN":
-        $sql="SELECT landkreis.id AS ID, `kreis_kurz`, `kreis_name`, `kreis_stadt`, bundesland.name AS bundesland FROM `landkreis`, bundesland WHERE `bd_id` = bundesland.id and kreis_kurz like '$par';";
-	$returnvalue=$connector->getEntriesAsJSON($sql);
+        $sql="SELECT landkreis.id AS ID, `kreis_kurz`, `kreis_name`, `kreis_stadt`, bundesland.name AS bundesland FROM `landkreis`, bundesland WHERE `bd_id` = bundesland.id and kreis_kurz like '$par' ORDER BY kreis_kurz;";
+		$returnvalue=$connector->getEntriesAsJSON($sql);
         break;
     case "KRE":
-        $sql="SELECT landkreis.id AS ID, `kreis_kurz`, `kreis_name`, `kreis_stadt`, bundesland.name AS bundesland FROM `landkreis`, bundesland WHERE `bd_id` = bundesland.id and kreis_name like '$par';";
-	$returnvalue=$connector->getEntriesAsJSON($sql);
+        $sql="SELECT landkreis.id AS ID, `kreis_kurz`, `kreis_name`, `kreis_stadt`, bundesland.name AS bundesland FROM `landkreis`, bundesland WHERE `bd_id` = bundesland.id and kreis_stadt like '$par' ORDER BY kreis_stadt ;";
+		$returnvalue=$connector->getEntriesAsJSON($sql);
         break;
-    case "KENshort":
-        $sql="SELECT `kreis_kurz`FROM `landkreis` WHERE kreis_kurz like '$par%';";
-	$returnvalue=$connector->getEntriesAsJSON($sql);
+    case "BDL":
+        $sql="SELECT landkreis.id AS ID, `kreis_kurz`, `kreis_name`, `kreis_stadt`, bundesland.name AS bundesland FROM `landkreis`, bundesland WHERE `bd_id` = bundesland.id and bundesland.name like '$par' ORDER BY kreis_kurz;";
+		$returnvalue=$connector->getEntriesAsJSON($sql);
+        break;
+    case "BDLshort":
+        $sql="SELECT bundesland.name AS bundesland FROM bundesland WHERE bundesland.name like '$par%' ORDER BY bundesland.name;";
+		if ($par == "")
+			$returnvalue=json_encode(false);
+		else
+			$returnvalue=$connector->getEntriesAsJSON($sql);
+        break;
+	case "KENshort":
+        $sql="SELECT `kreis_kurz`FROM `landkreis` WHERE kreis_kurz like '$par%' ORDER BY kreis_kurz;";
+		if ($par == "")
+			$returnvalue=json_encode(false);
+		else
+			$returnvalue=$connector->getEntriesAsJSON($sql);
         break;
     case "KREshort":
-        $sql="SELECT `kreis_name` FROM `landkreis` WHERE kreis_name like '$par%';";
-	$returnvalue=$connector->getEntriesAsJSON($sql);
+        $sql="SELECT `kreis_stadt` FROM `landkreis` WHERE kreis_stadt like '$par%' ORDER BY kreis_stadt;";
+		if ($par == "")
+			$returnvalue=json_encode(false);
+		else
+			$returnvalue=$connector->getEntriesAsJSON($sql);
+        break;
+	case "KENlong":
+        $sql="SELECT landkreis.id AS ID, `kreis_kurz`, `kreis_name`, `kreis_stadt`, bundesland.name AS bundesland FROM `landkreis`, bundesland WHERE `bd_id` = bundesland.id and kreis_kurz like '$par%' ORDER BY kreis_kurz;";
+		if ($par == "")
+			$returnvalue=json_encode(false);
+		else
+			$returnvalue=$connector->getEntriesAsJSON($sql);
+        break;
+	case "KRElong":
+        $sql="SELECT landkreis.id AS ID, `kreis_kurz`, `kreis_name`, `kreis_stadt`, bundesland.name AS bundesland FROM `landkreis`, bundesland WHERE `bd_id` = bundesland.id and kreis_stadt like '$par%' ORDER BY kreis_kurz;";
+		if ($par == "")
+			$returnvalue=json_encode(false);
+		else
+			$returnvalue=$connector->getEntriesAsJSON($sql);
         break;
     case "exportCSV":
-	$connector->exportToCSV();
+		$connector->exportToCSV();
+        break;
+    case "exportXML":
+		$connector->exportToXML();
         break;
     default:
         $returnvalue=json_encode(false);
@@ -39,6 +75,11 @@ print ($returnvalue);
 }
 else {
 print json_encode(false);
+}
+
+if (isset($_GET["debug"])){
+print "<br><br>";
+var_export($sql);
 }
 
 
@@ -54,6 +95,7 @@ class MySqlConnector{
 		$this->password = "doenerali";
 		$this->db = "db1176230-ptdiff";
 		$this->connect();
+		//SET NAMES 'utf8';  
 		//print("verbindung hergestellt<br>");
 	}
 	
@@ -109,15 +151,16 @@ class MySqlConnector{
 	}
 	
 	public function execute($sql){
+
+		$result = mysql_query("SET NAMES 'utf8';") or die ('Query failed: '.mysql_error());
+
 		$result = mysql_query($sql) or die ('Query failed: '.mysql_error());
 
 		if ($result){
 			$lines = array();
 			while($line = mysql_fetch_array($result, MYSQL_ASSOC)){
 				array_push($lines,$line);
-				//var_dump($line);
 			}
-			//var_dump($lines);
 			return $lines;
 		}
 		else
@@ -134,6 +177,11 @@ class MySqlConnector{
 		foreach ($entries as $line){
 			array_push($result, $line);
 		}
+
+if (isset($_GET["debug"])){
+print "<br><br>";
+var_export($result);
+}
 
 		if (empty($result))
 			return json_encode(false);
@@ -166,33 +214,131 @@ class MySqlConnector{
 		//print $sql;
 		$dump = $this->execute($sql);
 		$delimeter=";";
-		$filename="export.csv";
+		$filename="export";
+
+ 
+		header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+		header('Content-Description: File Transfer');
+		header("Content-type: application/csv; charset=utf-8");
+		header("Content-Disposition: attachment; filename={$fileName}");
+		header("Expires: 0");
+		header("Pragma: public");
+ 
+		$fh = @fopen( 'php://output', 'w' );
+ 
+		$headerDisplayed = false;
+ 
+		foreach ( $dump as $data ) {
+		    // Add a header row if it hasn't been added yet
+		    if ( !$headerDisplayed ) {
+		        // Use the keys from $data as the titles
+		        fputcsv($fh, array_keys($data), $delimeter);
+		        $headerDisplayed = true;
+		    }
+ 
+		    // Put the data into the stream
+		    fputcsv($fh, $data, $delimeter);
+		}
+		// Close the file
+		fclose($fh);
+
+	}
+
+	public function exportToXML(){
+
+		$sql = "SELECT * FROM $this->tablename;";
+		//print $sql;
+		$dump = $this->execute($sql);
+		$delimeter=";";
+		$filename="export.xml";
+
+ 
+		header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+		header('Content-Description: File Transfer');
+		header("Content-type: text/xml; charset=utf-8");
+		header("Content-Disposition: attachment; filename={$fileName}");
+		header("Expires: 0");
+		header("Pragma: public");
+ 
+		$fh = @fopen( 'php://output', 'w' );
+ 
+		$headerDisplayed = false;
+ 
+/*		foreach ( $dump as $data ) {
+		    // Add a header row if it hasn't been added yet
+		    if ( !$headerDisplayed ) {
+		        // Use the keys from $data as the titles
+		        fputcsv($fh, array_keys($data), $delimeter);
+		        $headerDisplayed = true;
+		    }
+ 
+		    // Put the data into the stream
+		    fputcsv($fh, $data, $delimeter);
+		}
+		// Close the file
+		fclose($fh);
+*/
 
 
-header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-header('Content-Description: File Transfer');
-header("Content-type: text/csv; charset=utf-8");
-header("Content-Disposition: attachment; filename={$fileName}");
-header("Expires: 0");
-header("Pragma: public");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//export
+header('Content-Type: text/xml');
+                
+include 'config.inc.php'; 
  
-$fh = @fopen( 'php://output', 'w' );
- 
-$headerDisplayed = false;
- 
-foreach ( $dump as $data ) {
-    // Add a header row if it hasn't been added yet
-    if ( !$headerDisplayed ) {
-        // Use the keys from $data as the titles
-        fputcsv($fh, array_keys($data), $delimeter);
-        $headerDisplayed = true;
+$xml = new SimpleXMLElement("<?xml version='1.0' standalone='yes'?><xml/>");
+
+$arr = array(array("name"=>"first", "type"=>"none"), array("name"=>"second", "type"=>"true"));
+$arr= $dump;
+
+
+ /*
+foreach ($arr as $data){
+    $row = $xml->addChild('line');
+    foreach ($data as $key => $val){
+        $row->addChild($key,utf8_encode($val));
     }
- 
-    // Put the data into the stream
-    fputcsv($fh, $data, $delimeter);
+}*/
+
+foreach ($arr as $key=>$value){
+    $row = $xml->addChild($key);
+    foreach ($value as $key => $val){
+        $row->addChild($key,utf8_encode($val));
+    }
 }
-// Close the file
-fclose($fh);
+ 
+{
+  echo $xml->asXML();
+}
+
+
+
+//import
+/*
+$xml2 = "<xml><line><name>first</name><type>none</type></line><line><name>second</name><type>true</type></line></xml>";
+
+$foo =  simplexml_load_string($xml2, null, LIBXML_NOCDATA);
+$foo = json_decode(json_encode($foo, 1));
+
+//var_dump (xml2array($xml2));
+
+var_export($foo);
+*/
 
 	}
 
