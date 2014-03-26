@@ -1,36 +1,57 @@
 <?php
 
-include "dataserver.php";
+# include and define some necessary functionality
 include "htmloutput.php";
-
-$dataserver = new DataServer();
 $htmloutput = new HTMLOutput();
 
+
+function getData($par, $status)
+{
+    $json_data = @file_get_contents("http://www.sbeckert.de/ptdiff-kfz/index-db.php?status=$status&par=$par");
+    $data = json_decode($json_data);
+    $data = @get_object_vars($data[0]);
+    return $data;
+}
+
+
+
+# some logic to fill string variables with html code
+
+$message="";
 $list="";
 $wiki="";
 $google="";
 
 if(isset($_GET["status"]) && isset($_GET["par"]))
-#if($_GET["status"] != null & $_GET["par"] != null)
 {
-    # kein treffer
-    if($dataserver->getData($_GET["par"], $_GET["status"]) == false
-       & $dataserver->getData($_GET["par"], $_GET["status"]."short") == false)
+    $data = getData($_GET["par"], $_GET["status"]);
+    $listdata = getData($_GET["par"], $_GET["status"]."short");
+
+
+    # when fetching json data doesnt work, then we'll get "null"
+    if($data == null)
     {
-        # do nothing
+        $message="Couldn't fetch data.";
+        $data=false;
     }
-    else
+    if($listdata == null)
+    {
+        $message="Couldn't fetch data.";
+        $listdata=false;
+    }
+    
+
+    if($data != false || $listdata != false)
     {
         # wenn nicht genau ein treffer, dann liste
-        if(sizeof($dataserver->getData($_GET["par"], $_GET["status"]."short")) > 1 )
+        if(sizeof($listdata) > 1 )
         {
             $list = $htmloutput->suggestions();
         }
         
         # wenn treffer, dann gmaps und wiki
-        if($dataserver->getData($_GET["par"], $_GET["status"]) != false)
+        if($data != false)
         {
-            $data = $dataserver->getData($_GET["par"], $_GET["status"]);
             $google = $htmloutput->gmapsEmbedding(urlencode($data["kreis_stadt"]));
             #$wiki = $htmloutput->wikiEmbedding($data["kreis_stadt"]);
         }
@@ -38,14 +59,18 @@ if(isset($_GET["status"]) && isset($_GET["par"]))
 }
 ?>
 
+
+
+<!-- embed those variables into the following template -->
+
 <html>
     <head>
         <link rel="stylesheet" type="text/css" href="html-frontend/CSS/style.css" />
-
     </head>
     <body>
         <div id="body">
             <div id="center">
+                <?php if($message!="")echo '<div class="others"> <hr>'.$message."</hr></div>"; ?>
                 <form action="index.php" method="get">
                     <div class="kfzimage">
                         <input id="kfz" name="par" type="text" placeholder="---" maxlength="3"/>
