@@ -8,8 +8,32 @@ $htmloutput = new HTMLOutput();
 function getData($par, $status)
 {
     $json_data = @file_get_contents("http://www.sbeckert.de/ptdiff-kfz/index-db.php?status=$status&par=$par");
+    
+    # return null if, json_data is broken
+    if($json_data == null)
+    {
+        return null;
+    }
+    
+    # otherwise go on with further treatment
     $data = json_decode($json_data);
-    $data = @get_object_vars($data[0]);
+
+    if(sizeof($data) == 1)
+    {
+        $tmp[0] = @get_object_vars($data[0]);
+        $data = $tmp;
+    }
+    
+    if(sizeof($data) > 1)
+    {
+        $temp=array();
+        for($i = 0; $i < sizeof($data); $i++)
+        {
+            $temp[$i]=@get_object_vars($data[$i]);
+        }
+        $data = $temp;
+    }
+    
     return $data;
 }
 
@@ -25,7 +49,7 @@ $google="";
 if(isset($_GET["status"]) && isset($_GET["par"]))
 {
     $data = getData($_GET["par"], $_GET["status"]);
-    $listdata = getData($_GET["par"], $_GET["status"]."short");
+    $listdata = getData($_GET["par"], $_GET["status"]."long");
 
 
     # when fetching json data doesnt work, then we'll get "null"
@@ -46,13 +70,13 @@ if(isset($_GET["status"]) && isset($_GET["par"]))
         # wenn nicht genau ein treffer, dann liste
         if(sizeof($listdata) > 1 )
         {
-            $list = $htmloutput->suggestions();
+            $list = $htmloutput->suggestions($listdata);
         }
         
         # wenn treffer, dann gmaps und wiki
         if($data != false)
         {
-            $google = $htmloutput->gmapsEmbedding(urlencode($data["kreis_stadt"]));
+            $google = $htmloutput->gmapsEmbedding(urlencode($data[0]["kreis_stadt"]));
             #$wiki = $htmloutput->wikiEmbedding($data["kreis_stadt"]);
         }
     }
@@ -69,6 +93,7 @@ if(isset($_GET["status"]) && isset($_GET["par"]))
     </head>
     <body>
         <div id="body">
+            <?php if($list!="")echo '<div id="suggestions" class="list"> <hr>'.$list."</div>"; ?>
             <div id="center">
                 <?php if($message!="")echo '<div class="others"> <hr>'.$message."</hr></div>"; ?>
                 <form action="index.php" method="get">
@@ -89,7 +114,6 @@ if(isset($_GET["status"]) && isset($_GET["par"]))
                         <input id="query type" name="status" type="hidden" value="KRE"/>
                     </div>
                 </form>
-                <?php if($list!="")echo '<div class="list"> <hr>'.$list."</div>"; ?>
                 <?php if($wiki!="")echo '<div class="wikipedia"> <hr>'.$wiki."</div>"; ?>
                 <?php if($google!="")echo '<div class="googlemaps"> <hr>'.$google."</div>"; ?>
             </div>
