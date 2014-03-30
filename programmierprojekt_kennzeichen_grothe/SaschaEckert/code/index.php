@@ -4,9 +4,8 @@
 include "htmloutput.php";
 $htmloutput = new HTMLOutput();
 
-
 function getData($par, $status)
-{
+{    
     $json_data = @file_get_contents("http://www.sbeckert.de/ptdiff-kfz/index-db.php?status=$status&par=$par");
     
     # return null if, json_data is broken
@@ -44,78 +43,110 @@ function getData($par, $status)
 $message="";
 $list="";
 $wiki="";
+$info="";
 $google="";
 
-if(isset($_GET["status"]) && isset($_GET["par"]))
-{
-    $data = getData($_GET["par"], $_GET["status"]);
-    $listdata = getData($_GET["par"], $_GET["status"]."long");
+$status="";
+$par="";
+
+if(isset($_GET["KENpar"]) || isset($_GET["KREpar"]))
+{    
+    if($_GET["KENpar"] != "")
+    {
+        $status = "KEN";
+        $par = $_GET["KENpar"];
+    }
+    else
+    {
+        $status = "KRE";
+        $par = $_GET["KREpar"];
+    }
+    
+    $data = getData($par, $status);
+    $listdata = getData($par, $status."long");
 
 
     # when fetching json data doesnt work, then we'll get "null"
-    if($data == null)
+    if($data == null || $listdata == null)
     {
         $message="Couldn't fetch data.";
         $data=false;
-    }
-    if($listdata == null)
-    {
-        $message="Couldn't fetch data.";
         $listdata=false;
     }
     
-
-    if($data != false || $listdata != false)
+    # wenn nicht genau ein treffer, dann liste
+    if($listdata != false && sizeof($listdata) > 1 )
     {
-        # wenn nicht genau ein treffer, dann liste
-        if(sizeof($listdata) > 1 )
-        {
-            $list = $htmloutput->suggestions($listdata);
-        }
-        
-        # wenn treffer, dann gmaps und wiki
-        if($data != false)
-        {
-            $google = $htmloutput->gmapsEmbedding(urlencode($data[0]["kreis_stadt"]));
-            #$wiki = $htmloutput->wikiEmbedding($data["kreis_stadt"]);
-        }
+        $list = $htmloutput->renderSuggestionsSection($listdata);
+    }
+    
+    # wenn treffer, dann gmaps und wiki
+    if($data != false && $data[0] != null)
+    {
+        $google = $htmloutput->renderGmapsEmbedding($data[0]["kreis_stadt"]);
+        $info = $htmloutput->renderInfoSection(array_slice($data[0], 1));
+        $wiki = $htmloutput->renderWikiEmbedding($data[0]["kreis_stadt"]);
     }
 }
 ?>
-
 
 
 <!-- embed those variables into the following template -->
 
 <html>
     <head>
+        <meta charset="utf-8" />
         <link rel="stylesheet" type="text/css" href="html-frontend/CSS/style.css" />
+        <script type="text/javascript">
+            function CheckInput ()
+            {
+                if(document.forms[0].elements["kfz"].value == "" && document.forms[0].elements["kreis"].value == "")
+                {
+                    return false;
+                }
+                
+                if(document.forms[0].elements["kfz"].value != "" && document.forms[0].elements["kreis"].value != "")
+                {
+                    alert("Bitte genau ein Feld ausfüllen.");
+                    document.forms[0].reset();
+                    return false;
+                }
+                return true;
+            }
+        </script>
     </head>
     <body>
         <div id="body">
-            <?php if($list!="")echo '<div id="suggestions" class="list"> <hr>'.$list."</div>"; ?>
+            <?php if($list!="")echo '<div id="suggestions" class="wikipedia">'.$list."</div>"; ?>
             <div id="center">
                 <?php if($message!="")echo '<div class="others"> <hr>'.$message."</hr></div>"; ?>
-                <form action="index.php" method="get">
+                <form action="index.php" method="get" onsubmit="CheckInput();">
                     <div class="kfzimage">
-                        <input id="kfz" name="par" type="text" placeholder="---" maxlength="3"/>
-                        <input id="query type" name="status" type="hidden" value="KEN"/>
+                        <?php
+                            if($status == "KEN")
+                            {echo '<input id="kfz" name="KENpar" type="text" value="'.$par.'" placeholder="---" maxlength="3"/>';}
+                            else
+                            {echo '<input id="kfz" name="KENpar" type="text" placeholder="---" maxlength="3"/>';}
+                        ?>
+                        <!-- <input id="kfz flag" name="status" type="hidden" value="KEN"/> -->
                     </div>
                     <div class="others">
                         <input id="rightbutton"  type="submit" value="Suchen"/>
                     </div>
-                </form>
-                <br>
-                <br>
-                <form action="index.php" method="get">
                     <div class="others">
-                        <input id="kreis" name="par" type="text" placeholder="Kreisstadt"/>
+                        <?php
+                            if($status == "KRE")
+                            {echo '<input id="kreis" name="KREpar" type="text" value="'.$par.'" placeholder="Kreisstadt"/>';}
+                            else
+                            {echo '<input id="kreis" name="KREpar" type="text" placeholder="Kreisstadt"/>';}
+                        ?>
                         <input id="rightbutton"  type="submit" value="Suchen"/>
-                        <input id="query type" name="status" type="hidden" value="KRE"/>
+                        <!-- <input id="kreis flag" name="status" type="hidden" value="KRE"/> -->
                     </div>
                 </form>
-                <?php if($wiki!="")echo '<div class="wikipedia"> <hr>'.$wiki."</div>"; ?>
                 <?php if($google!="")echo '<div class="googlemaps"> <hr>'.$google."</div>"; ?>
+                <?php if($info!="")echo '<div class="wikipedia"> <hr>'.$info."</div>"; ?>
+                <?php if($wiki!="")echo '<div class="wikipedia"> <hr>'.$wiki."</div>"; ?>
             </div>
         </div>
     </body>
