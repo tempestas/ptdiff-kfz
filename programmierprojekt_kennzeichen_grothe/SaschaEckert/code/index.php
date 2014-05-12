@@ -6,7 +6,10 @@ $htmloutput = new HTMLOutput();
 
 function getData($par, $status)
 {    
-    $json_data = @file_get_contents("http://www.sbeckert.de/ptdiff-kfz/index-db.php?status=$status&par=$par");
+	if($par==null || $par=='')
+    $json_data = @file_get_contents("http://www.sbeckert.de/ptdiff-kfz/index-db.php?status=$status&par=");
+    else
+	$json_data = @file_get_contents("http://www.sbeckert.de/ptdiff-kfz/index-db.php?status=$status&par=$par");
     
     # return null if, json_data is broken
     if($json_data == null)
@@ -49,10 +52,11 @@ $google="";
 $status="";
 $par="";
 $country='<select id="middle" name="BDLpar"><option  value="" selected="selected">Bundesland</option>';
-$countryList=getData("BDLshort",'');
-if($countryList!="false")
-foreach($countryList as $key => $bund){
-	$country.='<option value="'.$bund.'">'.$bund.'</option>';
+$countryList=getData('',"BDLshort");
+foreach($countryList as $bundarr){
+	foreach($bundarr as $key=>$bund){
+		$country.='<option value="'.$bund.'">'.$bund.'</option>';
+	}
 }
 $country.='</select>';
 if(isset($_GET["KENpar"]) || isset($_GET["KREpar"]) || isset($_GET["BDLpar"]))
