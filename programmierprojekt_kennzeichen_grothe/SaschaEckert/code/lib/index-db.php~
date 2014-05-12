@@ -132,7 +132,6 @@ class MySqlConnector{
 		$entries = $this->execute($sql);
 		$result = Array();
 		foreach ($entries as $line){
-			//array_push($result, (array("ID" => $line['ID'], "kreis_kurz" => $line['kreis_kurz'], "kreis_name" => $line['kreis_name'], "kreis_stadt" => $line['kreis_stadt'], "bundesland" => $line['bundesland'])));
 			array_push($result, $line);
 		}
 
@@ -196,6 +195,14 @@ foreach ( $dump as $data ) {
 fclose($fh);
 
 	}
+
+
+
+
+public function exportToXML(){
+http://stackoverflow.com/questions/486757/how-to-generate-xml-file-dynamically-using-php
+}
+
 
 }
 
