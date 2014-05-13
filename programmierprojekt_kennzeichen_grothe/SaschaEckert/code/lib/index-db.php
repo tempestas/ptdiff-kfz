@@ -26,7 +26,7 @@ switch ($status) {
 		$returnvalue=$connector->getEntriesAsJSON($sql);
         break;
     case "BDLshort":
-    if ($par == ""){
+    if ($par == null || $par == ""){
       $sql="SELECT bundesland.name AS bundesland FROM bundesland ORDER BY bundesland.name;";
 			$returnvalue=$connector->getEntriesAsJSON($sql);
       }

@@ -11,7 +11,7 @@ function getData($par, $status)
     else
 	$json_data = @file_get_contents("http://www.sbeckert.de/ptdiff-kfz/index-db.php?status=$status&par=$par");
     
-    # return null if, json_data is broken
+  # return null if, json_data is broken
     if($json_data == null)
     {
         return null;
@@ -90,9 +90,15 @@ if(isset($_GET["KENpar"]) || isset($_GET["KREpar"]) || isset($_GET["BDLpar"]))
     }
     
     # wenn nicht genau ein treffer, dann liste
-    if($listdata != false && sizeof($listdata) > 1 )
+    if($listdata != false &&( sizeof($listdata) > 1 || $_GET["BDLpar"] != "") )
     {
-        $list = $htmloutput->renderSuggestionsSection($listdata);
+		$flag=false;
+		if($_GET["BDLpar"] != ""){
+			$flag=true;
+			$data=false;
+		}
+		$list =$htmloutput->renderSuggestionsSection($listdata,$flag);
+		
     }
     
     # wenn treffer, dann gmaps und wiki
@@ -128,6 +134,23 @@ if(isset($_GET["KENpar"]) || isset($_GET["KREpar"]) || isset($_GET["BDLpar"]))
                 }
                 return true;
             }
+				function SelectCountry(e){
+				var elem, evt = e ? e:event;
+ if (evt.srcElement)  elem = evt.srcElement;
+ else if (evt.target) elem = evt.target;
+ while (elem && elem.nodeName !== "TR") {
+        elem = elem.parentNode;
+    }
+ if (elem) {
+						var cells = elem.getElementsByTagName("td");
+						for (var i = 0; i < cells.length; i++) {
+							if(cells[i].id=="kurz")
+							document.getElementById('kfz').value = cells[i].innerHTML;
+						}
+					}
+ return true;
+				};
+			
         </script>
     </head>
     <body>
