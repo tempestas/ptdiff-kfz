@@ -8,15 +8,15 @@ class HTMLOutput
     {
         $html = "";
         
-        $html = "<table>\n";
-        $html = $html."<tr><th>Kennzeichen</th><th>Landkreis</th><th>Kreisstadt</th><th>Bundesland</th></tr>\n";
+        $html = "<table id='list' onclick=\"SelectCountry()\">\n";
+        $html = $html."<thead><tr><th>Kennzeichen</th><th>Landkreis</th><th>Kreisstadt</th><th>Bundesland</th></tr></thead><tbody>\n";
         foreach($locationIDs as $l)
         {
             $html = $html."<tr>";
-            $html = $html."<td>".$l["kreis_kurz"]."</td>"."<td>".$l["kreis_name"]."</td>"."<td>".$l["kreis_stadt"]."</td>"."<td>".$l["bundesland"]."</td>";
+            $html = $html."<td id='kurz'>".$l["kreis_kurz"]."</td>"."<td>".$l["kreis_name"]."</td>"."<td>".$l["kreis_stadt"]."</td>"."<td>".$l["bundesland"]."</td>";
             $html = $html."</tr>\n";
         }
-        $html = $html."</table>\n";
+        $html = $html."</tbody></table>\n";
         return $html;
     }
     
