@@ -1,0 +1,19 @@
+- Protokolle
+- Anwendungsfall-Beschreibung
+- UML
+      * Use-Case-Diagramm
+      * Klassendiagramm
+      * Aktivitätsdiagramm
+      * Sequenzdiagramm
+- Implementierung
+      * entsprechend den Klassen in php
+      * statische HTML seiten
+      * Kennzeichen-Mapping (XML-Datei, CSV-Datei, (oder Netzwerk?))
+- Test
+      - Unit-Tests?
+      - Testpläne (Was ist wie ist zu testen?)
+      - Testzuordnung (Wer testet was?)
+      - Testkontext:
+            * Platformunabhängigkeit
+            * Performance dürfte zweitrangig sein
+- 

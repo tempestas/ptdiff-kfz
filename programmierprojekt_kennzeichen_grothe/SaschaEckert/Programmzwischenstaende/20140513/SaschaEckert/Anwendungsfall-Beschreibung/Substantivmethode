@@ -1,0 +1,15 @@
+Das Programm soll anhand von Parametern fuer ein Bundesland, eines Landkreises oder eines Autokennzeichens die Aufloesung zum Autokennzeichen oder zum Landkreis liefern. Ebennfalls sollen in diesem Schritt weitere Informationen ermittelt werden. Hierzu gehoeren Informationen ueber den Landkreis selbst als auch die Darstellung in einer Karte. Eine Import/Export-Funktion soll ebenfalls vorhanden sein.
+
+Klassen:
+- Datenobjekt
+	- Attribute: Array mit Daten ueber Bundesland, Landkreis und Autokennzeichen
+	- Funktionen: lesen/speichern von Daten, suchen von Datensaetzen
+- Objekt fuer weitere Daten
+	- Attribute: keine
+	- Funtionen: ermittlung von weiteren Daten
+- Objekt zur Darstellung (Karte/Information)
+	- Attribute: keine
+	- Funktionen: darstellen von ermittelten Informationen und Kartendaten
+- Objekt zum Im-und Export
+	- Attribute: keine
+	- Funktionen: Import von xml oder csv dateien, Export von xml oder csv dateien
