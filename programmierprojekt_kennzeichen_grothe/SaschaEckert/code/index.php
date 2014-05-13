@@ -6,7 +6,10 @@ $htmloutput = new HTMLOutput();
 
 function getData($par, $status)
 {    
-    $json_data = @file_get_contents("http://www.sbeckert.de/ptdiff-kfz/index-db.php?status=$status&par=$par");
+	if($par==null || $par=='')
+    $json_data = @file_get_contents("http://www.sbeckert.de/ptdiff-kfz/index-db.php?status=$status&par=");
+    else
+	$json_data = @file_get_contents("http://www.sbeckert.de/ptdiff-kfz/index-db.php?status=$status&par=$par");
     
     # return null if, json_data is broken
     if($json_data == null)
@@ -48,13 +51,25 @@ $google="";
 
 $status="";
 $par="";
-
-if(isset($_GET["KENpar"]) || isset($_GET["KREpar"]))
+$country='<select id="middle" name="BDLpar"><option  value="" selected="selected">Bundesland</option>';
+$countryList=getData('',"BDLshort");
+foreach($countryList as $bundarr){
+	foreach($bundarr as $key=>$bund){
+		$country.='<option value="'.$bund.'">'.$bund.'</option>';
+	}
+}
+$country.='</select>';
+if(isset($_GET["KENpar"]) || isset($_GET["KREpar"]) || isset($_GET["BDLpar"]))
 {    
     if($_GET["KENpar"] != "")
     {
         $status = "KEN";
         $par = $_GET["KENpar"];
+    }
+	else if($_GET["BDLpar"] != "")
+    {
+        $status = "BDL";
+        $par = $_GET["BDLpar"];
     }
     else
     {
@@ -133,6 +148,7 @@ if(isset($_GET["KENpar"]) || isset($_GET["KREpar"]))
                     <div class="others">
                         <input id="rightbutton"  type="submit" value="Suchen"/>
                     </div>
+					
                     <div class="others">
                         <?php
                             if($status == "KRE")
@@ -140,7 +156,7 @@ if(isset($_GET["KENpar"]) || isset($_GET["KREpar"]))
                             else
                             {echo '<input id="kreis" name="KREpar" type="text" placeholder="Kreisstadt"/>';}
                         ?>
-                        <input id="rightbutton"  type="submit" value="Suchen"/>
+                        <?php   echo $country;?><input id="rightbutton"  type="submit" value="Suchen"/>
                         <!-- <input id="kreis flag" name="status" type="hidden" value="KRE"/> -->
                     </div>
                 </form>

@@ -26,11 +26,15 @@ switch ($status) {
 		$returnvalue=$connector->getEntriesAsJSON($sql);
         break;
     case "BDLshort":
-        $sql="SELECT bundesland.name AS bundesland FROM bundesland WHERE bundesland.name like '$par%' ORDER BY bundesland.name;";
-		if ($par == "")
-			$returnvalue=json_encode(false);
-		else
+    if ($par == ""){
+      $sql="SELECT bundesland.name AS bundesland FROM bundesland ORDER BY bundesland.name;";
 			$returnvalue=$connector->getEntriesAsJSON($sql);
+      }
+		else
+    {
+    $sql="SELECT bundesland.name AS bundesland FROM bundesland WHERE bundesland.name like '$par%' ORDER BY bundesland.name;";
+			$returnvalue=$connector->getEntriesAsJSON($sql);
+      }
         break;
 	case "KENshort":
         $sql="SELECT `kreis_kurz`FROM `landkreis` WHERE kreis_kurz like '$par%' ORDER BY kreis_kurz;";
