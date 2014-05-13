@@ -1,0 +1,29 @@
+- Projekt-Team-Mitglieder: Daniel Encarnacao, Sascha Eckert, David Kirschner
+- Festlegung von Projektleiter (Sascha Eckert)
+- Protokollant: DavidKirschner
+- Projektleiter: Sascha Eckert
+- Einigung auf PHP als Programmiersprache zur Umsetzung
+- Erfassung der Aufgaben und verteilung auf die Gruppe:
+      - Auflösung von Kennzeichen in Bundesland und Kreis (Mapping irgendwo besorgen, vlt kann man auch einen öffentlichen Netzwerkdienst verwenden -> Recherche notwendig)
+            - Recherche zum Mapping von Daniel Encarnacao
+      - Auflösung: Bundesland, Kreis, Kreisstadt -> Kennzeichen (Mapping irgendwo besorgen, vlt kann man auch einen öffentlichen Netzwerkdienst verwenden -> Recherche notwendig)
+            - Recherche zum Mapping von Daniel Encarnacao
+      - Einbinden von GoogleMaps (einfach eine URL zusammen bauen und Map vom entsprechenden Kreis anzeigen?)
+      - Einbinden von Wikipedia (einfach eine URL zusammen bauen und Wiki-page vom entsprechenden Kreis anzeigen? wennn verfügbar)
+      - Daten-Import/Export (David Kirschner)
+      - Verschiedene Diagramme (UseCase: Sascha Eckert, Klassendiagramm: DavidKirschner, Daniel Encarnacao)
+- als Versionskontrollsystem wird git benutzt (Repository-Maintainer: Sascha Eckert)
+- Vereinbarung der Aufgaben bis zum nächsten Termin
+      - David Kirschner:
+            - initialer Klassen-Diagramm-Entwurf
+            - Erstellung eines Pflichtenheftes
+      - Sascha Eckert:
+            - Usecase-Diagramm
+            - Einrichten der Versionskontrolle und Bereitstellung der Zugangsdaten
+      - Daniel Encarnacao
+            - Recherche
+            
+- Punkte für den Nächsten Termin:
+      - Besprechung des Use-Case Diagramms
+      - Besprechung des Klassen Diagramms
+      - neuen Termin vereinbaren (09.02.2014 um 15.00 Uhr ander neuen ULB in Darmstadt)

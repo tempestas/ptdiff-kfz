@@ -349,9 +349,9 @@ var_export($foo);
 
 
 
-public function exportToXML(){
+//public function exportToXML(){
 //http://stackoverflow.com/questions/486757/how-to-generate-xml-file-dynamically-using-php
-}
+//}
 
 
 }

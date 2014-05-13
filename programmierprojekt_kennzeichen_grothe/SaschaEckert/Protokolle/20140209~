@@ -1,0 +1,16 @@
+- Besprechung d. Use-Case- und Klassendiagramms inkl. Aufarbeitung
+- Besprechung des Pflichtenheftes
+- Anlegen der Programmstruktur
+- Recherchen zur Umsetzung
+
+Aufgaben zum naechsten Termin (2014.03.19):
+	- Daniel:
+		- Entwurf eines statischen Frontents
+	- Sascha:
+		- Datenbankanbindung
+		- Datenbestand der kfz-Kennzeichen einpflegen
+		- Schnittstellen schaffen
+		- SQL-Abfragen
+	- David:
+		- Recherche zur Aufloesung (kfz -> map/wikipedia)
+		- Umsetzung
