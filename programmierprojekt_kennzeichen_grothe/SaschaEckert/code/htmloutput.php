@@ -45,9 +45,11 @@ class HTMLOutput
         $data = array();
         $data = file_get_contents("http://de.wikipedia.org/w/api.php?action=query&format=json&prop=extracts&titles=".$locationID."&exintro=1");
         $data = get_object_vars(json_decode($data));
-        $data = get_object_vars($data[array_keys($data)[0]]);
-        $data = get_object_vars($data[array_keys($data)[0]]);
-        $data = get_object_vars($data[array_keys($data)[0]]);
+		$data = $data['query']->pages;
+		$key=key(get_object_vars($data));
+		$data=$data->$key->extract;
+
+var_export($data);
         return $data["extract"];
     }
 }
