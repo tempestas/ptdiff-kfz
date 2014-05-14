@@ -148,7 +148,7 @@ if(isset($_GET["KENpar"]) || isset($_GET["KREpar"]) || isset($_GET["BDLpar"]))
 						var cells = elem.getElementsByTagName("td");
 						for (var i = 0; i < cells.length; i++) {
 							if(cells[i].id=="kurz")
-							document.getElementById('kfz').value = cells[i].innerHTML;
+							document.getElementById('kfz').value = cells[i].children[0].value;
 						}
 					}
  return true;

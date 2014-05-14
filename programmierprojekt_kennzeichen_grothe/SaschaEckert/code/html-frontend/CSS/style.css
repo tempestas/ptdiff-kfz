@@ -2,10 +2,12 @@
 font-family:FE-Font;
 src:url(/FONT/FE-Font.ttf);
 }
+@font-face { font-family: Verdanna, Arial;}
 @font-face { font-family: 'FE-Font';
-             src: url('/FONT/FE-Font.ttf') format('truetype'); }
+             src: url('http://www.sbeckert.de/ptdiff-kfz/html-frontend/FONT/FE-Font.woff'); }
 @font-face { font-family: 'FE-Font';
-             src: url('/FONT/FE-Font.woff'); }
+             src: url('http://www.sbeckert.de/ptdiff-kfz/html-frontend/FONT/FE-Font.ttf') format('truetype'); }
+
 body{
     padding: 0;
     margin: 0;

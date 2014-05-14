@@ -106,7 +106,10 @@ if(isset($_GET["KENpar"]) || isset($_GET["KREpar"]) || isset($_GET["BDLpar"]))
     {
         $google = $htmloutput->renderGmapsEmbedding($data[0]["kreis_stadt"]);
         $info = $htmloutput->renderInfoSection(array_slice($data[0], 1));
-        $wiki = $htmloutput->renderWikiEmbedding($data[0]["kreis_stadt"]);
+//        $wiki = $htmloutput->renderWikiEmbedding($data[0]["kreis_stadt"]); // ausgabe gibt eine liste bei nicht eindeudikeit durch leerzeichen (es wird der suchbegriff abgeschnitten)
+
+		$kreisstadt = str_replace(" ","_",$data[0]["kreis_stadt"]);
+		$wiki = $htmloutput->renderWikiEmbedding($kreisstadt);
     }
 }
 ?>
@@ -145,7 +148,7 @@ if(isset($_GET["KENpar"]) || isset($_GET["KREpar"]) || isset($_GET["BDLpar"]))
 						var cells = elem.getElementsByTagName("td");
 						for (var i = 0; i < cells.length; i++) {
 							if(cells[i].id=="kurz")
-							document.getElementById('kfz').value = cells[i].innerHTML;
+							document.getElementById('kfz').value = cells[i].children[0].value;
 						}
 					}
  return true;
