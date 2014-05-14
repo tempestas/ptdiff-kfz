@@ -17,6 +17,9 @@ body{
     background-color:DDDDDD;
 }
 
+#kfz_button{
+width:100%;
+}
 .googlemaps iframe {
     width: 97%;
 }
@@ -35,7 +38,7 @@ body>*{
 }
 .others{
     position:relative;
-}   
+}
 #kreis{
     width:6.5em;
     font-size:30;
