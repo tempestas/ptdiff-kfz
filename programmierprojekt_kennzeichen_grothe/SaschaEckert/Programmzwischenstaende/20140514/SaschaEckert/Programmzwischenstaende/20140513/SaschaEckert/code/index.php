@@ -106,10 +106,7 @@ if(isset($_GET["KENpar"]) || isset($_GET["KREpar"]) || isset($_GET["BDLpar"]))
     {
         $google = $htmloutput->renderGmapsEmbedding($data[0]["kreis_stadt"]);
         $info = $htmloutput->renderInfoSection(array_slice($data[0], 1));
-//        $wiki = $htmloutput->renderWikiEmbedding($data[0]["kreis_stadt"]); // ausgabe gibt eine liste bei nicht eindeudikeit durch leerzeichen (es wird der suchbegriff abgeschnitten)
-
-		$kreisstadt = str_replace(" ","_",$data[0]["kreis_stadt"]);
-		$wiki = $htmloutput->renderWikiEmbedding($kreisstadt);
+        $wiki = $htmloutput->renderWikiEmbedding($data[0]["kreis_stadt"]);
     }
 }
 ?>

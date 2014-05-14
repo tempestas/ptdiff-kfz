@@ -1,0 +1,86 @@
+@font-face {
+font-family:FE-Font;
+src:url(/FONT/FE-Font.ttf);
+}
+@font-face { font-family: 'FE-Font';
+             src: url('/FONT/FE-Font.ttf') format('truetype'); }
+@font-face { font-family: 'FE-Font';
+             src: url('/FONT/FE-Font.woff'); }
+body{
+        padding: 0;
+        margin: 0;
+        height:100.1%;
+        position:relative;
+        top:0;
+        overflow-y: scroll;
+        overflow-x: hidden;
+        background-color:DDDDDD;
+}
+
+.googlemaps iframe {
+         width: 97%;
+}
+body>*{
+         overflow:hidden!important;
+}
+#body{
+        width:1050px;
+        height:auto;
+        top:10%;
+        bottom:0;
+        padding:0;
+        padding-left:30%;
+}
+.list,.wikipedia,.googlemaps{
+         margin:10px;
+}
+.others{
+
+        position:relative;
+        }
+        #kreis{
+        width:6.5em;
+         font-size:30;
+        height:1.5em;
+         margin-left:10px;
+        }
+#header{
+        background-color:grey;
+        height:10%;
+        top:0;
+        padding:0;
+        margin:0;
+}
+#rightbutton{
+ display:right;
+ width:12em;
+ height:3.5em;
+ position:absolute;
+ right:10px;
+ margin-right:0px;
+}
+#kfz{
+width:1.8em;
+height:1.1em;
+margin-left:0.6em;
+margin-top:0.2em;
+         font-size:90;
+ font-family:FE-Font;
+}
+.kfzimage{
+
+         width:98%;
+         height:139px;
+   background-image:url(../Images/logo2.png);
+  background-size:100%;
+  -moz-background-size:100%;
+  margin-right:10px;
+   background-repeat:no-repeat;
+}
+#center{
+        width:55%;
+        float:left;
+        height:auto;
+        background-color:white;
+        overflow: hidden;
+}

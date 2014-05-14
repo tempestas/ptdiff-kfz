@@ -25,10 +25,6 @@ switch ($status) {
         $sql="SELECT landkreis.id AS ID, `kreis_kurz`, `kreis_name`, `kreis_stadt`, bundesland.name AS bundesland FROM `landkreis`, bundesland WHERE `bd_id` = bundesland.id and bundesland.name like '$par' ORDER BY kreis_kurz;";
 		$returnvalue=$connector->getEntriesAsJSON($sql);
         break;
-    case "BDLlong":
-        $sql="SELECT landkreis.id AS ID, `kreis_kurz`, `kreis_name`, `kreis_stadt`, bundesland.name AS bundesland FROM `landkreis`, bundesland WHERE `bd_id` = bundesland.id and bundesland.name like '$par' ORDER BY kreis_kurz;";
-		$returnvalue=$connector->getEntriesAsJSON($sql);
-        break;
     case "BDLshort":
     if ($par == null || $par == ""){
       $sql="SELECT bundesland.name AS bundesland FROM bundesland ORDER BY bundesland.name;";

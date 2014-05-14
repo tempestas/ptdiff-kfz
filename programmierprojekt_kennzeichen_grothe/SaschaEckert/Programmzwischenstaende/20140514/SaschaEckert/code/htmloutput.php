@@ -49,8 +49,8 @@ class HTMLOutput
 		$key=key(get_object_vars($data));
 		$data=$data->$key->extract;
 
-//var_export($data);
-        return $data;
+var_export($data);
+        return $data["extract"];
     }
 }
 
